@@ -14,7 +14,7 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
       <main className={styles.container}>
         <Section title="Utilities">
         <p>
-          <Button>Import new prices</Button>
+          <Button>Import new pricelist</Button>
         </p>
         </Section>
       </main>
