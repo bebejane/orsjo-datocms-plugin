@@ -16,15 +16,6 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
         <p>
           <Button>Import new prices</Button>
         </p>
-        <p>
-          <Button>Generate pricelist PDF (en)</Button>
-        </p>
-        <p>
-          <Button>Generate pricelist PDF (sv)</Button>
-        </p>
-        <p>
-          <Button>Generate pricelist PDF (no)</Button>
-        </p>
         </Section>
       </main>
     </Canvas>
