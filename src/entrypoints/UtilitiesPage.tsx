@@ -16,7 +16,7 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
 
   useEffect(() => {
     console.log(`Connecting to ${websocketServer}..ye2.`);
-    const socket = io(websocketServer, {withCredentials: true});
+    const socket = io(websocketServer, {withCredentials: true, transports: ['websocket']});
     socket.on('connect', () => console.log('connected'));
     socket.on('log', (log : String) => { console.log(log)})
     socket.on("connect_error", (err) => console.log(err.toString()));
