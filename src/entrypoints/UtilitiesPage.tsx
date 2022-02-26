@@ -10,6 +10,7 @@ type PropTypes = { ctx: RenderPageCtx };
 export default function UtilitiesPage({ ctx }: PropTypes) {
   const parameters = ctx.plugin.attributes.parameters as Object;
   const socketRef = useRef();
+  console.log('hej...');
 
   useEffect(() => {
     console.log('Connecting to server...');
