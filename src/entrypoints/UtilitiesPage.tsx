@@ -20,6 +20,7 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
     socket.on('connect', () => console.log('connected'));
     socket.on('log', (log : String) => { console.log(log)})
     socket.on("connect_error", (err) => console.log(err));
+    socket.on("error", (err) => console.log(err));
     console.log(`done setup`);
     
   }, [])
