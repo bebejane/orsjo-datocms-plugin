@@ -10,7 +10,7 @@ type PropTypes = { ctx: RenderPageCtx };
 export default function UtilitiesPage({ ctx }: PropTypes) {
   const parameters = ctx.plugin.attributes.parameters as Object;
   const socketRef = useRef();
-  const websocketServer = 'http://104.248.32.196:80';
+  const websocketServer = 'http://104.248.32.196/';
 
   console.log('hej...');
 
