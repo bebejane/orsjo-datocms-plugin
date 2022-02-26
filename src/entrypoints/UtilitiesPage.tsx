@@ -14,7 +14,7 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
 
   useEffect(() => {
     console.log('Connecting to server...');
-    const socket = io('wss://104.248.32.196')
+    const socket = io('http://104.248.32.196')
     socket.on('log', (log : String) => { 
       console.log(log)
     })
