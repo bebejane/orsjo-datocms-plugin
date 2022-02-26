@@ -16,11 +16,13 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
 
   useEffect(() => {
     console.log(`Connecting to ${websocketServer}...`);
-    const socket = io(websocketServer);
+    const socket = io(websocketServer, {withCredentials: true});
     socket.on('connect', () => console.log('connected'));
     socket.on('log', (log : String) => { 
       console.log(log)
     })
+
+    console.log(`done setup`);
     
   }, [])
 
