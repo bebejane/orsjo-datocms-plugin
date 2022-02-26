@@ -12,7 +12,8 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
   const socketRef = useRef();
 
   useEffect(() => {
-    const socket = io('http://104.248.32.196') 
+    console.log('Connecting to server...');
+    const socket = io('http://104.248.32.196')
     socket.on('log', (log : String) => { 
       console.log(log)
     })
