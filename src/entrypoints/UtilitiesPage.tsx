@@ -19,7 +19,7 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
     const socket = io(websocketServer, {withCredentials: true});
     socket.on('connect', () => console.log('connected'));
     socket.on('log', (log : String) => { console.log(log)})
-    socket.on("connect_error", (err) => console.log(err));
+    socket.on("connect_error", (err) => console.log(err.toString()));
     socket.on("error", (err) => console.log(err));
     console.log(`done setup`);
     
