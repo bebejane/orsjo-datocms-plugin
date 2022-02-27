@@ -15,7 +15,10 @@ export default function ConfigScreen({ ctx }: Props) {
   const parameters = ctx.plugin.attributes.parameters as Parameters;
   const [form, setForm] = useState({...parameters})
 
-  const saveSettings = () => ctx.updatePluginParameters({...form})
+  const saveSettings = () => {
+    ctx.updatePluginParameters({...form})
+    ctx.notice('Settings updated successfully!');
+  }
 
   return (
     <Canvas ctx={ctx}>
