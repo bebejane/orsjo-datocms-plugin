@@ -4,9 +4,9 @@ import s from './styles.module.css';
 
 type Props = { ctx: RenderConfigScreenCtx; };
 
-type FreshInstallationParameters = { host:''};
+type FreshInstallationParameters = { host:'', username:'', password:''};
 
-type ValidParameters = { host: string };
+type ValidParameters = { host: string, username: string, password: string };
 
 type Parameters = FreshInstallationParameters | ValidParameters;
 
@@ -27,6 +27,26 @@ export default function ConfigScreen({ ctx }: Props) {
             placeholder="http://..."
             hint="Provide webserver host"
             onChange={(newValue) => ctx.updatePluginParameters({ host: newValue })}
+          />
+          <TextField
+            required
+            name="username"
+            id="username"
+            label="Username"
+            value={parameters.username}
+            placeholder="Basic auth username..."
+            hint="Provide username"
+            onChange={(newValue) => ctx.updatePluginParameters({ username: newValue })}
+          />
+          <TextField
+            required
+            name="password"
+            id="password"
+            label="Password"
+            value={parameters.password}
+            placeholder="Basic auth password..."
+            hint="Provide password"
+            onChange={(newValue) => ctx.updatePluginParameters({ password: newValue })}
           />
         </FieldGroup>
       </Form>

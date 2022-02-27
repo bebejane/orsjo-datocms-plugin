@@ -16,7 +16,7 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
   console.log(`Plugin v${version}`);
 
   useEffect(() => {
-    console.log(`Connecting to ${websocketServer}..ye6.`);
+    console.log(`Connecting to ${websocketServer}...`);
     const socket = io(websocketServer, {transports: ['polling', 'websocket']});
     socket.on('connect', () => console.log('connected'));
     socket.on('log', (log : String) => { console.log(log)})
