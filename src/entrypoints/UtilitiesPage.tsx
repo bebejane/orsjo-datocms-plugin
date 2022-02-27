@@ -19,7 +19,7 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
     socket.on("connect_error", (err) => console.log(err.toString()));
     socket.on("error", (err) => console.log(err));
     console.log(`done setup`);
-    
+    fetch('http://104.248.32.196/socket.io/?EIO=4&transport=polling&t=Nywqk5i').then(r => console.log(r)).catch(err => console.error(err))
   }, [])
 
   return (
