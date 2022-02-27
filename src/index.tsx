@@ -38,3 +38,5 @@ connect({
     }
   },
 });
+
+console.log(`orsjo-datocms-plugin v${require('../package.json').version}`);

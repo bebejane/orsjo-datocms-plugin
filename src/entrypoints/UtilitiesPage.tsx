@@ -4,16 +4,12 @@ import { useRef, useEffect } from 'react'
 import { RenderPageCtx } from 'datocms-plugin-sdk';
 import { Canvas, Button, Spinner, Section } from 'datocms-react-ui';
 
-const { version } = require('../../package.json');
-
 type PropTypes = { ctx: RenderPageCtx };
 
 export default function UtilitiesPage({ ctx }: PropTypes) {
   const parameters = ctx.plugin.attributes.parameters as Object;
   const socketRef = useRef();
   const websocketServer = 'http://104.248.32.196/';
-
-  console.log(`Plugin v${version}`);
 
   useEffect(() => {
     console.log(`Connecting to ${websocketServer}...`);
