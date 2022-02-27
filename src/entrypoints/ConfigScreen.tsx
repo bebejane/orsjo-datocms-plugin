@@ -1,5 +1,5 @@
 import { RenderConfigScreenCtx } from 'datocms-plugin-sdk';
-import { Canvas, ContextInspector, Form, FieldGroup, TextField, Button } from 'datocms-react-ui';
+import { Canvas, Form, FieldGroup, TextField, Button } from 'datocms-react-ui';
 import s from './styles.module.css';
 
 type Props = { ctx: RenderConfigScreenCtx; };
@@ -12,11 +12,19 @@ type Parameters = FreshInstallationParameters | ValidParameters;
 
 export default function ConfigScreen({ ctx }: Props) {
   const parameters = ctx.plugin.attributes.parameters as Parameters;
-  const handleSubmit = () => {}
+
+  const saveSettings = () => {
+    const { value : host } = document.getElementById('host') as HTMLInputElement;
+    const { value : username } = document.getElementById('username') as HTMLInputElement;
+    const { value : password } = document.getElementById('password') as HTMLInputElement;
+    
+    ctx.updatePluginParameters({ host, username, password })
+   
+  }
 
   return (
     <Canvas ctx={ctx}>
-      <Form onSubmit={handleSubmit}>
+      <Form>
         <FieldGroup>
           <TextField
             required
@@ -48,13 +56,9 @@ export default function ConfigScreen({ ctx }: Props) {
             hint="Provide password"
             onChange={(newValue) => ctx.updatePluginParameters({ password: newValue })}
           />
+          <Button onClick={saveSettings}>Save settings</Button>
         </FieldGroup>
       </Form>
-      {/*
-      <div className={s.inspector}>
-        <ContextInspector />
-      </div>
-      */}
     </Canvas>
   );
 }
