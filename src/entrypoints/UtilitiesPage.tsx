@@ -1,21 +1,35 @@
 import styles from './UtilitiesPage.module.css'
 import io from 'socket.io-client'
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { RenderPageCtx } from 'datocms-plugin-sdk';
 import { Canvas, Button, Spinner, Section } from 'datocms-react-ui';
+import {format} from 'date-fns';
 
 type PropTypes = { ctx: RenderPageCtx };
 type ValidParameters = { host: string, username: string, password: string };
+type Log = {t:string, m:string};
 
 export default function UtilitiesPage({ ctx }: PropTypes) {
+  const [logs, setLogs] = useState<Log[]>([])
   const parameters = ctx.plugin.attributes.parameters as ValidParameters;
   const websocketServer = parameters.host;
+  const username = parameters.username;
+  const password = parameters.password;
 
   useEffect(() => {
     console.log(`Connecting to ${websocketServer}...`);
-    const socket = io(websocketServer, {transports: ['polling', 'websocket']});
+    //const headers = new Headers(); 
+		//const basicAuth = `Basic ${btoa(username + ":" + password)}`
+    //headers.append('Authorization', basicAuth);
+		
+    const socket = io(websocketServer, {transports: ['polling', 'websocket'], });
     socket.on('connect', () => console.log('connected'));
-    socket.on('log', (log : String) => { console.log(log)})
+    socket.on('log', (log : Log) => { 
+      logs.push(log);
+      setLogs(logs);
+      //logger.value = logs.map((log) => '[' + formatDate(log.t) + '] ' + log.m).join('')
+      //logger.scrollTop = logger.scrollHeight;
+    })
     socket.on("connect_error", (err) => console.log(err.toString()));
     socket.on("error", (err) => console.log(err));
     console.log(`done setup`);
@@ -28,6 +42,10 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
         <p>
           <Button>Import pricelist (.xlsx)</Button>
         </p>
+        <p>Logs</p>
+        <textarea id="logs">
+          {logs.map((log) => `${format(new Date(log.t), 'YYYY-MM-DD HH:ss')} ${log.t}`).join('\n')}
+        </textarea>
         </Section>
       </main>
     </Canvas>
