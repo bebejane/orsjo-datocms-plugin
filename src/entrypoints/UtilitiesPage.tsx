@@ -29,18 +29,15 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
   const password = parameters.password;
 
   const callApi = async (path:string, locale:string) => {
-    console.log(document.referrer);
-    const headers = new Headers(); 
     
+    const headers = new Headers(); 
 		const basicAuth = `Basic ${btoa(unescape(encodeURIComponent(username + ":" + password)))}`
     headers.append('Authorization', basicAuth);
-    const res = await fetch(`${websocketServer}${path}`, {
-			method: 'GET',
-			headers
-		})
-		const data = await res.json();
-    console.log(data, locale)
-    setStatus(status.map(s => ({...s, id:s.locale === locale ? data.id : s.id})));
+    console.log('fetch')
+    const res = await fetch(`${websocketServer}${path}`, {method: 'GET',headers})
+    const { id } = await res.json()
+    setStatus(status.map(s => ({...s, id: s.locale === locale ? parseInt(id) : s.id})));
+  
   }
 
   useEffect(() => {
@@ -73,6 +70,7 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
     link.href = s?.data?.uploads[0].url;
     document.body.appendChild(link);
     link.click();
+    ctx.notice(`Downloading "${s?.data?.uploads[0].filename}"`);
     setTimeout(() => { link.parentNode?.removeChild(link)}, 0);
   }
 
@@ -85,23 +83,28 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
         <p>
           <Button>Import pricelist (.xlsx)</Button>
         </p>
-        {status.map(({locale, status}) =>
+        {status.map(({locale, status, id}) =>
           <p>
-            <Button onClick={()=>callApi(`/${locale}/catalogue`, locale)}>
+            <Button onClick={()=>callApi(`/${locale}/catalogue`, locale)} >
               {`Generate Pricelist (${locale})`} 
             </Button>
-            <Button disabled={status?.status !== 'END'} onClick={()=>downloadFile(status)}>
-              {!status || status?.status === 'END' ? <GrDocumentPdf/> : <Spinner/>}
-            </Button>
+            &nbsp;
+            <Button 
+              disabled={status?.status !== 'END'} 
+              onClick={()=>downloadFile(status)} 
+              leftIcon={!id || status?.status === 'END' ? <GrDocumentPdf/> : <Spinner/>}
+            />
           </p>
         )}
-        <p>Server logs</p>
-        <textarea 
-          id="logs" 
-          className={styles.logs} 
-          value={logs.map((log) => `[${format(new Date(log.t), 'yyyy-MM-dd HH:mm:ss')}] ${log.m}`).join('')}
-        />
-        <Button onClick={()=>setLogs([])}>Clear</Button>
+        
+        </Section>
+        <Section title="Server logs">
+          <textarea 
+            id="logs" 
+            className={styles.logs} 
+            value={logs.map((log) => `[${format(new Date(log.t), 'yyyy-MM-dd HH:mm:ss')}] ${log.m}`).join('')}
+          />
+          <Button onClick={()=>setLogs([])}>Clear</Button>
         </Section>
       </main>
     </Canvas>
