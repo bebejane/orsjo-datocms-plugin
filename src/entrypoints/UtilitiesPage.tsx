@@ -4,7 +4,7 @@ import { useRef, useEffect, useState } from 'react'
 import { RenderPageCtx } from 'datocms-plugin-sdk';
 import { Canvas, Button, Spinner, Section } from 'datocms-react-ui';
 import { format } from 'date-fns';
-import GeneratePdfButton from '../components/GeneratePdfButton';
+import { encode } from 'base64-ts';
 
 type PropTypes = { ctx: RenderPageCtx };
 type ValidParameters = { host: string, username: string, password: string };
@@ -30,7 +30,8 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
   const callApi = async (path:string, locale:string) => {
     console.log(document.referrer);
     const headers = new Headers(); 
-		const basicAuth = `Basic ${btoa(username + ":" + password)}`
+    
+		const basicAuth = `Basic ${btoa(unescape(encodeURIComponent(username + ":" + password)))}`
     headers.append('Authorization', basicAuth);
     const res = await fetch(`${websocketServer}${path}`, {
 			method: 'GET',
