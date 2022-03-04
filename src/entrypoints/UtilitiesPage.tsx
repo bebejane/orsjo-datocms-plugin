@@ -25,17 +25,18 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
     const socket = io(websocketServer, {transports: ['polling', 'websocket'], });
     socket.on('connect', () => console.log('connected ws'));
     socket.on('log', (log : Log) => { 
-      console.log(log)
       logs.push(log);
-      setLogs(logs);
+      setLogs([...logs]);
       //logger.value = logs.map((log) => '[' + formatDate(log.t) + '] ' + log.m).join('')
       //logger.scrollTop = logger.scrollHeight;
     })
     socket.on("connect_error", (err) => console.log(err.toString()));
     socket.on("error", (err) => console.log(err));
     console.log(`done ws setup`);
-    
+
   }, [websocketServer])
+  
+  console.log(logs)
 
   return (
     <Canvas ctx={ctx}>
