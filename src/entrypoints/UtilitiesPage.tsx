@@ -54,7 +54,7 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
     })
     socket.on('status', (stat : Status) => { 
       console.log(stat);
-      setStatus(status.map(s => ({...s, status: s.id === stat.id ? stat : s.status})));
+      setStatus((status) => status.map(s => ({...s, status: s.id === stat.id ? stat : s.status})));
     })
     socket.on("connect_error", (err) => setConnectionError(err));
     socket.on("error", (err) => setConnectionError(err));
