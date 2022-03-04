@@ -38,6 +38,7 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
 			headers
 		})
 		const data = await res.json();
+    console.log(data, locale)
     setStatus(status.map(s => ({...s, id:s.locale === locale ? data.id : s.id})));
   }
 
@@ -59,6 +60,8 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
     socket.on("error", (err) => setConnectionError(err));
 
     console.log(`done ws setup`);
+
+    return () => { socket.disconnect() };
 
   }, [websocketServer])
   console.log(status)
