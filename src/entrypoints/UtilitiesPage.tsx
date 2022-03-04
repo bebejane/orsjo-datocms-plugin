@@ -28,7 +28,7 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
   const password = parameters.password;
 
   const callApi = async (path:string, locale:string) => {
-    
+    console.log(document.referrer);
     const headers = new Headers(); 
 		const basicAuth = `Basic ${btoa(username + ":" + password)}`
     headers.append('Authorization', basicAuth);
