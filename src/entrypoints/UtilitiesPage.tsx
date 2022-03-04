@@ -5,6 +5,7 @@ import { RenderPageCtx } from 'datocms-plugin-sdk';
 import { Canvas, Button, Spinner, Section } from 'datocms-react-ui';
 import { format } from 'date-fns';
 import { encode } from 'base64-ts';
+import { GrDocumentPdf } from 'react-icons/gr'
 
 type PropTypes = { ctx: RenderPageCtx };
 type ValidParameters = { host: string, username: string, password: string };
@@ -64,6 +65,17 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
     return () => { socket.disconnect() };
 
   }, [websocketServer])
+
+  const downloadFile = (s?:Status) => {
+    if(!s || !s.data?.uploads) return 
+    const link = document.createElement("a");
+    link.style.display = "none";
+    link.href = s?.data?.uploads[0].url;
+    document.body.appendChild(link);
+    link.click();
+    setTimeout(() => { link.parentNode?.removeChild(link)}, 0);
+  }
+
   console.log(status)
 
   return (
@@ -78,10 +90,9 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
             <Button onClick={()=>callApi(`/${locale}/catalogue`, locale)}>
               {`Generate Pricelist (${locale})`} 
             </Button>
-            {status && status.status !== 'END' && <Spinner/>}
-            {status && status.status === 'END' && status.data?.uploads.map((u:Upload) =>
-              <a href={u.url} target="_new">{u.filename}</a>
-            )}
+            <Button disabled={status?.status !== 'END'} onClick={()=>downloadFile(status)}>
+              {!status || status?.status === 'END' ? <GrDocumentPdf/> : <Spinner/>}
+            </Button>
           </p>
         )}
         <p>Server logs</p>
