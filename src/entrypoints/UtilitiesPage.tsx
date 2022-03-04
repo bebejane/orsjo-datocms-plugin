@@ -23,8 +23,9 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
     //headers.append('Authorization', basicAuth);
 		
     const socket = io(websocketServer, {transports: ['polling', 'websocket'], });
-    socket.on('connect', () => console.log('connected'));
+    socket.on('connect', () => console.log('connected ws'));
     socket.on('log', (log : Log) => { 
+      console.log(log)
       logs.push(log);
       setLogs(logs);
       //logger.value = logs.map((log) => '[' + formatDate(log.t) + '] ' + log.m).join('')
@@ -32,7 +33,8 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
     })
     socket.on("connect_error", (err) => console.log(err.toString()));
     socket.on("error", (err) => console.log(err));
-    console.log(`done setup`);
+    console.log(`done ws setup`);
+    
   }, [websocketServer])
 
   return (
@@ -47,6 +49,7 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
           {logs.map((log) => `${format(new Date(log.t), 'yyyy-MM-dd HH:mm:ss')} ${log.t}`).join('\n')}
         </textarea>
         </Section>
+
       </main>
     </Canvas>
   );
