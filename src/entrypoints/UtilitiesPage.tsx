@@ -83,7 +83,7 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
         <textarea 
           id="logs" 
           className={styles.logs} 
-          value={logs.map((log) => `[${format(new Date(log.t), 'yyyy-MM-dd HH:mm:ss')}] ${log.m}`).join('\n')}
+          value={logs.map((log) => `[${format(new Date(log.t), 'yyyy-MM-dd HH:mm:ss')}] ${log.m}`).join('')}
         />
         <Button onClick={()=>setLogs([])}>Clear</Button>
         </Section>
