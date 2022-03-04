@@ -51,9 +51,8 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
       logs.push(log);
       setLogs([...logs]);
     })
-    socket.on('status', (s : Status) => { 
-      //status[s.id] = s;
-      //setStatus({...s})
+    socket.on('status', (stat : Status) => { 
+      setStatus(status.map(s => ({...s, status: s.id === stat.id ? stat : s.status})));
     })
     socket.on("connect_error", (err) => setConnectionError(err));
     socket.on("error", (err) => setConnectionError(err));
