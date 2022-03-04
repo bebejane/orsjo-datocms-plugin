@@ -44,7 +44,7 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
         </p>
         <p>Logs</p>
         <textarea id="logs">
-          {logs.map((log) => `${format(new Date(log.t), 'YYYY-MM-DD HH:ss')} ${log.t}`).join('\n')}
+          {logs.map((log) => `${format(new Date(log.t), 'yyyy-MM-dd HH:mm:ss')} ${log.t}`).join('\n')}
         </textarea>
         </Section>
       </main>
