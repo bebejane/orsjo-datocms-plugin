@@ -1,5 +1,5 @@
 import styles from './UtilitiesPage.module.css'
-import io from 'socket.io-client'
+import {io, Socket} from 'socket.io-client'
 import { useRef, useEffect, useState } from 'react'
 import { RenderPageCtx } from 'datocms-plugin-sdk';
 import { Canvas, Button, Spinner, Section } from 'datocms-react-ui';
@@ -11,7 +11,7 @@ type PropTypes = { ctx: RenderPageCtx };
 type ValidParameters = { host: string, username: string, password: string };
 type Log = {t:string, m:string};
 type Status = {id:number, status:string, type:string, data?:any};
-type StatusMap = {locale:string, id?:number, status?:Status};
+type StatusMap = {locale:string, id?:number, status?:Status, processing?:boolean};
 type Upload = {url:string, filename:string};
 
 const locales : StatusMap[] = [{locale:'en'}, {locale:'sv'}, {locale:'no'}]
@@ -23,6 +23,7 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
   const [connectionError, setConnectionError] = useState<Error>()
   const [isConnected, setIsConnected] = useState<Boolean>(false);
 
+  const socketRef = useRef<Socket>();
   const parameters = ctx.plugin.attributes.parameters as ValidParameters;
   const websocketServer = parameters.host;
   const username = parameters.username;
@@ -32,34 +33,36 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
     
     const headers = new Headers(); 
 		const basicAuth = `Basic ${btoa(unescape(encodeURIComponent(username + ":" + password)))}`
-    headers.append('Authorization', basicAuth);
-    console.log('fetch')
+    headers.append('Authorization', basicAuth);    
+    
+    setStatus(status.map(s => ({...s, processing: s.locale === locale ? true : s.processing})));
+
     const res = await fetch(`${websocketServer}${path}`, {method: 'GET',headers})
     const { id } = await res.json()
-    setStatus(status.map(s => ({...s, id: s.locale === locale ? parseInt(id) : s.id})));
-  
+    
+    setStatus(status.map(s => ({...s, id: s.locale === locale ? parseInt(id) : s.id, processing: s.locale === locale ? true : s.processing})));
   }
 
   useEffect(() => {
     console.log(`Connecting to ${websocketServer}...`);
     
-    const socket = io(websocketServer, {transports: ['polling', 'websocket'], });
-    socket.on('connect', () => setIsConnected(true));
-    socket.on('disconnect', () => setIsConnected(false));
-    socket.on('log', (log : Log) => { 
+    socketRef.current = io(websocketServer, {transports: ['polling', 'websocket'], });
+    socketRef.current.on('connect', () => setIsConnected(true));
+    socketRef.current.on('disconnect', () => setIsConnected(false));
+    socketRef.current.on('log', (log : Log) => { 
       logs.push(log);
       setLogs([...logs]);
     })
-    socket.on('status', (stat : Status) => { 
+    socketRef.current.on('status', (stat : Status) => { 
       console.log(stat);
       setStatus((status) => status.map(s => ({...s, status: s.id === stat.id ? stat : s.status})));
     })
-    socket.on("connect_error", (err) => setConnectionError(err));
-    socket.on("error", (err) => setConnectionError(err));
+    socketRef.current.on("connect_error", (err) => setConnectionError(err));
+    socketRef.current.on("error", (err) => setConnectionError(err));
 
     console.log(`done ws setup`);
 
-    return () => { socket.disconnect() };
+    return () => { socketRef?.current?.disconnect() };
 
   }, [websocketServer])
 
@@ -83,7 +86,7 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
         <p>
           <Button>Import pricelist (.xlsx)</Button>
         </p>
-        {status.map(({locale, status, id}) =>
+        {status.map(({locale, status, id, processing}) =>
           <p>
             <Button onClick={()=>callApi(`/${locale}/catalogue`, locale)} >
               {`Generate Pricelist (${locale})`} 
@@ -92,7 +95,7 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
             <Button 
               disabled={status?.status !== 'END'} 
               onClick={()=>downloadFile(status)} 
-              leftIcon={!id || status?.status === 'END' ? <GrDocumentPdf/> : <Spinner/>}
+              leftIcon={!processing || status?.status === 'END' ? <GrDocumentPdf/> : <Spinner/>}
             />
           </p>
         )}
