@@ -52,6 +52,7 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
       setLogs([...logs]);
     })
     socket.on('status', (stat : Status) => { 
+      console.log(stat);
       setStatus(status.map(s => ({...s, status: s.id === stat.id ? stat : s.status})));
     })
     socket.on("connect_error", (err) => setConnectionError(err));
@@ -60,7 +61,8 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
     console.log(`done ws setup`);
 
   }, [websocketServer])
-  
+  console.log(status)
+
   return (
     <Canvas ctx={ctx}>
       <main className={styles.container}>
