@@ -77,8 +77,6 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
     setTimeout(() => { link.parentNode?.removeChild(link)}, 0);
   }
 
-  console.log(status)
-
   return (
     <Canvas ctx={ctx}>
       <main className={styles.container}>
