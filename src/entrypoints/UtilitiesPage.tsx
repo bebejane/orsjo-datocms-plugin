@@ -70,9 +70,10 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
       setLogs([...logs]);
     })
     socketRef.current.on('status', (stat : Status) => { 
-      if(stat.type === 'import') 
+      if(stat.type === 'import') {
+        console.log(stat);
         setImportStatus(stat);
-      else
+      }else
         setStatus((status) => status.map(s => ({...s, status: s.id === stat.id ? stat : s.status})));
     })
     socketRef.current.on("connect_error", (err) => setConnectionError(err));
