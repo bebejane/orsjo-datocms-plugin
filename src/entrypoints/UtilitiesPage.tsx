@@ -98,28 +98,36 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
   return (
     <Canvas ctx={ctx}>
       <main className={styles.container}>
-        <Section title="Utilities">
+
+        <Section title="Import excel price list">
         <p>
-        <input onChange={fileChangeHandler} type="file" name="pricelist" id="pricelist" accept=".xlsx, application/vnd.ms-excel"/>{importStatus && <Spinner/>}
-        <Button onClick={handleImportPricelist}>Start</Button>
-          <progress max={importStatus?.total} value={importStatus?.item}/> {importStatus?.total && `${importStatus?.item}/${importStatus?.total}`}
+          <input onChange={fileChangeHandler} type="file" name="pricelist" id="pricelist" accept=".xlsx, application/vnd.ms-excel"/>{importStatus && <Spinner/>}
+          <Button onClick={handleImportPricelist}>Start</Button>
+          <br/>
+          <progress
+            max={importStatus?.total || 0} 
+            value={importStatus?.item || 0}
+          /> {importStatus?.total && `${importStatus?.item}/${importStatus?.total}`}
         </p>
-        {status.map(({locale, status, id, processing}) =>
-          <p>
-            <Button onClick={()=>callApi(`/${locale}/catalogue`, locale)} >
-              {`Generate Pricelist (${locale})`} 
-            </Button>
-            &nbsp;
-            <Button 
-              disabled={status?.status !== 'END'} 
-              onClick={()=>downloadFile(status)} 
-              leftIcon={!processing || status?.status === 'END' ? <GrDocumentPdf/> : <Spinner/>}
-            />
-          </p>
-        )}
         </Section>
 
-        <Section title="Server logs">
+        <Section title="Generate price list PDF">
+          {status.map(({locale, status, id, processing}) =>
+            <p>
+              <Button onClick={()=>callApi(`/${locale}/catalogue`, locale)} >
+                {`Generate Pricelist (${locale})`} 
+              </Button>
+              &nbsp;
+              <Button 
+                disabled={status?.status !== 'END'} 
+                onClick={()=>downloadFile(status)} 
+                leftIcon={!processing || status?.status === 'END' ? <GrDocumentPdf/> : <Spinner/>}
+              />
+            </p>
+          )}
+        </Section>
+
+        <Section title="Logs">
           <textarea 
             id="logs" 
             className={styles.logs} 
