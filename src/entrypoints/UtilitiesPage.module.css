@@ -1,7 +1,6 @@
 .container {
   padding: 40px;
 }
-
 .logs{
   border: 1px solid gray;
   width: 100%;
@@ -11,11 +10,13 @@
 .file{
   margin-right: 10px;
 }
-
 .progress{
   width: 200px;
+  margin-right: 10px;
 }
-
 .notFound{
   color:red !important;
+}
+.notFound > tr > td {
+  padding-right: 10px;
 }
