@@ -101,10 +101,11 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
 
         <Section title="Import excel price list">
         <p>
-          <input onChange={fileChangeHandler} type="file" name="pricelist" id="pricelist" accept=".xlsx, application/vnd.ms-excel"/>
+          <input className={styles.file} onChange={fileChangeHandler} type="file" name="pricelist" id="pricelist" accept=".xlsx, application/vnd.ms-excel"/>
           <Button onClick={handleImportPricelist} disabled={selectedFile === undefined}>Start</Button>
           <br/>
           <progress
+            className={styles.progress}
             max={importStatus?.total || 0} 
             value={importStatus?.item || 0}
           /> {importStatus?.total && `${importStatus?.item}/${importStatus?.total}`}

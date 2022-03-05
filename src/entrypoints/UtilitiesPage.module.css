@@ -8,3 +8,10 @@
   min-height: 400px;
   user-select: none;
 }
+.file{
+  margin-right: 10px;
+}
+
+.progress{
+  width: 400px;
+}
