@@ -6,11 +6,12 @@ import { Canvas, Button, Spinner, Section, TextField } from 'datocms-react-ui';
 import { format } from 'date-fns';
 import { encode } from 'base64-ts';
 import { GrDocumentPdf } from 'react-icons/gr'
+import { createRegularExpressionLiteral } from 'typescript';
 
 type PropTypes = { ctx: RenderPageCtx };
 type ValidParameters = { host: string, username: string, password: string };
 type Log = {t:string, m:string};
-type Status = {id:number, status:string, type:string, data?:any, item?:number, total?:number, updated?:number, notFound?:number};
+type Status = {id:number, status:string, type:string, data?:any, item?:number, total?:number, updated?:[], notFound?:[]};
 type StatusMap = {locale:string, id?:number, status?:Status, processing?:boolean};
 type Upload = {url:string, filename:string};
 
@@ -70,8 +71,10 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
       setLogs([...logs]);
     })
     socketRef.current.on('status', (stat : Status) => { 
+      if(stat.status === 'ERROR')
+        ctx.notice(`Error: ${stat.data?.message || JSON.stringify(stat.data)}`)
+
       if(stat.type === 'import') {
-        console.log(stat);
         setImportStatus(stat);
       }else
         setStatus((status) => status.map(s => ({...s, status: s.id === stat.id ? stat : s.status})));
@@ -109,7 +112,16 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
             className={styles.progress}
             max={importStatus?.data?.total || 0} 
             value={importStatus?.data?.item || 0}
-          /> {importStatus?.data?.total && `${importStatus?.data?.item}/${importStatus?.data?.total}`}
+          /> {importStatus?.data?.total && `${importStatus?.data?.item} / ${importStatus?.data?.total}`}
+          {importStatus?.status === 'END' &&
+            <table className={styles.notFound}>
+            {importStatus?.data?.notFound.map((p:any) => 
+              <tr>
+                <td>{p.articleNo}</td><td>{p.description}</td><td>{p.price}</td><td>{p.type}</td>
+              </tr>
+            )}
+            </table>
+          }
         </p>
         </Section>
 

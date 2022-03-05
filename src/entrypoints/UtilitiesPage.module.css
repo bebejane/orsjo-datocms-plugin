@@ -15,3 +15,7 @@
 .progress{
   width: 200px;
 }
+
+.notFound{
+  color:red !important;
+}
