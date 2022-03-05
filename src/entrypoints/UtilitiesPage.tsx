@@ -102,6 +102,7 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
         <Section title="Import excel price list">
         <p>
           <input onChange={fileChangeHandler} type="file" name="pricelist" id="pricelist" accept=".xlsx, application/vnd.ms-excel"/>{importStatus && <Spinner/>}
+          <br/>
           <Button onClick={handleImportPricelist} disabled={selectedFile === undefined}>Start</Button>
           <br/>
           <progress
