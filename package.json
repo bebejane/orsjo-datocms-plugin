@@ -1,6 +1,6 @@
 {
   "name": "orsjo-datocms-plugin",
-  "version": "0.1.28",
+  "version": "0.1.29",
   "private": true,
   "dependencies": {
     "@types/node": "^16.11.25",
