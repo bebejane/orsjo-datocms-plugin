@@ -107,9 +107,9 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
           <br/>
           <progress
             className={styles.progress}
-            max={importStatus?.total || 0} 
-            value={importStatus?.item || 0}
-          /> {importStatus?.total && `${importStatus?.item}/${importStatus?.total}`}
+            max={importStatus?.data?.total || 0} 
+            value={importStatus?.data?.item || 0}
+          /> {importStatus?.data?.total && `${importStatus?.data?.item}/${importStatus?.data?.total}`}
         </p>
         </Section>
 
