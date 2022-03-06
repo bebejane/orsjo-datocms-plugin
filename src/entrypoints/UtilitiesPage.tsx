@@ -1,23 +1,22 @@
 import styles from './UtilitiesPage.module.css'
-import {io, Socket} from 'socket.io-client'
+
+import { io, Socket } from 'socket.io-client'
 import { useRef, useEffect, useState } from 'react'
 import { RenderPageCtx } from 'datocms-plugin-sdk';
 import { Canvas, Button, Spinner, Section, TextField } from 'datocms-react-ui';
 import { format } from 'date-fns';
-import { encode } from 'base64-ts';
 import { GrDocumentPdf } from 'react-icons/gr'
-import { createRegularExpressionLiteral } from 'typescript';
 
 type PropTypes = { ctx: RenderPageCtx };
 type ValidParameters = { host: string, username: string, password: string };
 type Log = {t:string, m:string};
 type Status = {id:number, status:string, type:string, data?:any, item?:number, total?:number, updated?:[], notFound?:[]};
 type StatusMap = {locale:string, id?:number, status?:Status, processing?:boolean};
-type Upload = {url:string, filename:string};
 
 const locales : StatusMap[] = [{locale:'en'}, {locale:'sv'}, {locale:'no'}]
 
-export default function UtilitiesPage({ ctx }: PropTypes) {
+export default function UtilitiesPage({ ctx } : PropTypes) {
+
   const [logs, setLogs] = useState<Log[]>([])
   const [status, setStatus] = useState<StatusMap[]>(locales)
   const [importStatus, setImportStatus] = useState<Status>()
@@ -52,10 +51,11 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
     if(!selectedFile) return 
 		const formData = new FormData();
     formData.append('file', selectedFile);
+    const basicAuth = `Basic ${btoa(unescape(encodeURIComponent(username + ":" + password)))}`
 		const headers = new Headers(); 
-		const basicAuth = `Basic ${btoa(unescape(encodeURIComponent(username + ":" + password)))}`
-    headers.append('Authorization', basicAuth);    
-		const res = await fetch(`${websocketServer}/import`,{method: 'POST', body: formData, headers})
+		headers.set('Authorization', basicAuth);    
+		
+    const res = await fetch(`${websocketServer}/import`,{method: 'POST', body: formData, headers})
 		const { id } = await res.json()
     setImportStatus({id, type:'import', status:'STARTING'})
 	};
@@ -74,9 +74,9 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
       if(stat.status === 'ERROR')
         ctx.notice(`Error: ${stat.data?.message || JSON.stringify(stat.data)}`)
 
-      if(stat.type === 'import') {
+      if(stat.type === 'import')
         setImportStatus(stat);
-      }else
+      else
         setStatus((status) => status.map(s => ({...s, status: s.id === stat.id ? stat : s.status})));
     })
     socketRef.current.on("connect_error", (err) => setConnectionError(err));
@@ -99,6 +99,9 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
     setTimeout(() => { link.parentNode?.removeChild(link)}, 0);
   }
 
+  if(!isConnected) 
+    return <Canvas ctx={ctx}><main className={styles.container}>Connecting to server... <Spinner/></main></Canvas>
+    
   return (
     <Canvas ctx={ctx}>
       <main className={styles.container}>
@@ -112,7 +115,8 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
             className={styles.progress}
             max={importStatus?.data?.total || 0} 
             value={importStatus?.data?.item || 0}
-          /> {importStatus?.data?.total && `${importStatus?.data?.item} / ${importStatus?.data?.total}`}
+          /> 
+          {importStatus?.data?.total && `${importStatus?.data?.item} / ${importStatus?.data?.total}`}
           {importStatus?.status === 'END' &&
             <table className={styles.notFound}>
             {importStatus?.data?.notFound.map((p:any) => 
