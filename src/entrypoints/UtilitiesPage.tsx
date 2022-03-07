@@ -36,13 +36,9 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
     const headers = new Headers(); 
 		const basicAuth = `Basic ${btoa(unescape(encodeURIComponent(username + ":" + password)))}`
     headers.append('Authorization', basicAuth);    
-    
-    setStatus(status.map(s => ({...s, processing: s.locale === locale ? true : s.processing})));
-    
     const res = await fetch(`${websocketServer}${path}`, {method: 'GET', headers})
     const { id } = await res.json()
-    setStatus(status.map(s => ({...s, id: s.locale === locale ? parseInt(id) : s.id, processing: s.locale === locale ? true : s.processing})));
-    
+    setStatus(status.map(s => ({...s, id: s.locale === locale ? parseInt(id) : s.id})));
   }
 
   const fileChangeHandler = (event:any) => setSelectedFile(event.target.files[0]);
@@ -54,7 +50,6 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
     const basicAuth = `Basic ${btoa(unescape(encodeURIComponent(username + ":" + password)))}`
 		const headers = new Headers(); 
 		headers.set('Authorization', basicAuth);    
-		
     const res = await fetch(`${websocketServer}/import`,{method: 'POST', body: formData, headers})
 		const { id } = await res.json()
     setImportStatus({id, type:'import', status:'STARTING'})
@@ -70,7 +65,7 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
       reconnectionDelayMax : 5000,
       reconnectionAttempts: 99999
     });
-    
+
     socketRef.current.on('connect', () => setIsConnected(true));
     socketRef.current.on('disconnect', () => setIsConnected(false));
     socketRef.current.on('log', (log : Log) => { 
@@ -124,7 +119,7 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
             value={importStatus?.data?.item || 0}
           /> 
           {importStatus?.data?.total && `${importStatus?.data?.item} / ${importStatus?.data?.total}`}
-          {importStatus?.status === 'END' &&
+          {importStatus?.data?.notFound?.length > 0 &&
             <table className={styles.notFound}>
             {importStatus?.data?.notFound.map((p:any) => 
               <tr>
@@ -137,7 +132,7 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
         </Section>
 
         <Section title="Generate price list PDF">
-          {status.map(({locale, status, id, processing}) =>
+          {status.map(({locale, status, id}) =>
             <p>
               <Button onClick={()=>callApi(`/${locale}/catalogue`, locale)} >
                 {`Generate Pricelist (${locale})`} 
@@ -146,7 +141,7 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
               <Button 
                 disabled={status?.status !== 'END'} 
                 onClick={()=>downloadFile(status)} 
-                leftIcon={!processing || status?.status === 'END' ? <GrDocumentPdf/> : <Spinner/>}
+                leftIcon={!id || status?.status === 'END' ? <GrDocumentPdf/> : <Spinner/>}
               />
             </p>
           )}
