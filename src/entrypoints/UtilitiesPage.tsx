@@ -21,7 +21,7 @@ const catalogues : StatusMap[] = [
   {locale:'en', path:'/en/catalogue/light', label:'Light - EN'}, 
   {locale:'sv', path:'/sv/catalogue/light', label:'Light - SV'}, 
   {locale:'no', path:'/no/catalogue/light', label:'Light - NO'}, 
-  {locale:'sv', path:'/sv/catalogue/with-lightsource', label:'Inc. Light - EN'}
+  {locale:'sv', path:'/sv/catalogue/with-lightsource', label:'Inc. Light - SV'}
 ]
 
 export default function UtilitiesPage({ ctx } : PropTypes) {
