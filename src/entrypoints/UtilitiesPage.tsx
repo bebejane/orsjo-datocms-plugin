@@ -6,19 +6,28 @@ import { RenderPageCtx } from 'datocms-plugin-sdk';
 import { Canvas, Button, Spinner, Section, TextField } from 'datocms-react-ui';
 import { format } from 'date-fns';
 import { GrDocumentPdf } from 'react-icons/gr'
+import GeneratePdfButton from '../components/GeneratePdfButton'
 
 type PropTypes = { ctx: RenderPageCtx };
 type ValidParameters = { host: string, username: string, password: string };
 type Log = {t:string, m:string};
-type Status = {id:number, status:string, type:string, data?:any, item?:number, total?:number, updated?:[], notFound?:[]};
-type StatusMap = {locale:string, id?:number, status?:Status, processing?:boolean};
+type Status = {id:number, status:string, type:string, path:string, locale:string, data?:any, item?:number, total?:number, updated?:[], notFound?:[]};
+type StatusMap = {locale:string, path:string, label:string, id?:number, status?:Status, processing?:boolean};
 
-const locales : StatusMap[] = [{locale:'en'}, {locale:'sv'}, {locale:'no'}]
+const catalogues : StatusMap[] = [
+  {locale:'en', path:'/en/catalogue', label:'Full - EN'}, 
+  {locale:'sv', path:'/sv/catalogue', label:'Full - SV'}, 
+  {locale:'no', path:'/no/catalogue', label:'Full - NO'}, 
+  {locale:'en', path:'/en/catalogue/light', label:'Light - EN'}, 
+  {locale:'sv', path:'/sv/catalogue/light', label:'Light - SV'}, 
+  {locale:'no', path:'/no/catalogue/light', label:'Light - NO'}, 
+  {locale:'sv', path:'/sv/catalogue/with-lightsource', label:'Inc. Light - EN'}
+]
 
 export default function UtilitiesPage({ ctx } : PropTypes) {
 
   const [logs, setLogs] = useState<Log[]>([])
-  const [status, setStatus] = useState<StatusMap[]>(locales)
+  const [status, setStatus] = useState<StatusMap[]>(catalogues)
   const [importStatus, setImportStatus] = useState<Status>()
   const [selectedFile, setSelectedFile] = useState<File>()
 
@@ -31,14 +40,14 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
   const username = parameters.username;
   const password = parameters.password;
 
-  const callApi = async (path:string, locale:string) => {
-    
+  const requestGeneration = async (path:string, locale:string) => { 
     const headers = new Headers(); 
 		const basicAuth = `Basic ${btoa(unescape(encodeURIComponent(username + ":" + password)))}`
     headers.append('Authorization', basicAuth);    
     const res = await fetch(`${websocketServer}${path}`, {method: 'GET', headers})
     const { id } = await res.json()
-    setStatus(status.map(s => ({...s, id: s.locale === locale ? parseInt(id) : s.id})));
+    const newStatus = status.map(s => ({...s, id: s.path === path ? parseInt(id) : s.id, status: s.path === path ? undefined : s.status}));
+    setStatus([...newStatus]);
   }
 
   const fileChangeHandler = (event:any) => setSelectedFile(event.target.files[0]);
@@ -50,9 +59,10 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
     const basicAuth = `Basic ${btoa(unescape(encodeURIComponent(username + ":" + password)))}`
 		const headers = new Headers(); 
 		headers.set('Authorization', basicAuth);    
+    
     const res = await fetch(`${websocketServer}/import`,{method: 'POST', body: formData, headers})
 		const { id } = await res.json()
-    setImportStatus({id, type:'import', status:'STARTING'})
+    setImportStatus({id, type:'import', status:'STARTING', path:'/import', locale:'en'})
 	};
 
   useEffect(() => {
@@ -83,32 +93,20 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
     })
     socketRef.current.on("connect_error", (err) => setConnectionError(err));
     socketRef.current.on("error", (err) => setConnectionError(err));
-
     console.log(`done ws setup`);
 
     return () => { socketRef?.current?.disconnect() };
 
   }, [websocketServer])
 
-  const downloadFile = (s?:Status) => {
-    if(!s || !s.data?.uploads) return 
-    const link = document.createElement("a");
-    link.style.display = "none";
-    link.href = s?.data?.uploads[0].url;
-    document.body.appendChild(link);
-    link.click();
-    ctx.notice(`Downloading "${s?.data?.uploads[0].filename}"`);
-    setTimeout(() => { link.parentNode?.removeChild(link)}, 0);
-  }
-
   if(!isConnected) 
     return <Canvas ctx={ctx}><main className={styles.container}>Connecting to server... <Spinner/></main></Canvas>
-    
+  
   return (
     <Canvas ctx={ctx}>
       <main className={styles.container}>
 
-        <Section title="Import excel price list">
+        <Section title="Import new prices (.xlxs)">
         <p>
           <input className={styles.file} onChange={fileChangeHandler} type="file" name="pricelist" id="pricelist" accept=".xlsx, application/vnd.ms-excel"/>
           <Button onClick={handleImportPricelist} disabled={selectedFile === undefined}>Start</Button>
@@ -131,17 +129,16 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
         </p>
         </Section>
 
-        <Section title="Generate price list PDF">
-          {status.map(({locale, status, id}) =>
+        <Section title="Generate catalogue">
+          {status.map(({label, locale, status, path }) =>
             <p>
-              <Button onClick={()=>callApi(`/${locale}/catalogue`, locale)} >
-                {`Generate Pricelist (${locale})`} 
-              </Button>
-              &nbsp;
-              <Button 
-                disabled={status?.status !== 'END'} 
-                onClick={()=>downloadFile(status)} 
-                leftIcon={!id || status?.status === 'END' ? <GrDocumentPdf/> : <Spinner/>}
+              <GeneratePdfButton 
+                ctx={ctx} 
+                status={status} 
+                label={label} 
+                locale={locale} 
+                path={path} 
+                requestGeneration={requestGeneration}
               />
             </p>
           )}
