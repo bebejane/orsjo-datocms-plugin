@@ -1,12 +1,10 @@
 import styles from './UtilitiesPage.module.css'
-
+import GeneratePdfButton from '../components/GeneratePdfButton'
 import { io, Socket } from 'socket.io-client'
 import { useRef, useEffect, useState } from 'react'
 import { RenderPageCtx } from 'datocms-plugin-sdk';
 import { Canvas, Button, Spinner, Section, TextField } from 'datocms-react-ui';
 import { format } from 'date-fns';
-import { GrDocumentPdf } from 'react-icons/gr'
-import GeneratePdfButton from '../components/GeneratePdfButton'
 
 type PropTypes = { ctx: RenderPageCtx };
 type ValidParameters = { host: string, username: string, password: string };
@@ -83,9 +81,11 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
       setLogs([...logs]);
     })
     socketRef.current.on('status', (stat : Status) => { 
-      if(stat.status === 'ERROR')
+      if(stat.status === 'ERROR'){
+        console.error(stat.data)
         ctx.notice(`Error: ${stat.data?.message || JSON.stringify(stat.data)}`)
-
+      }
+        
       if(stat.type === 'import')
         setImportStatus(stat);
       else
