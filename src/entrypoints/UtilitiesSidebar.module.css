@@ -1,0 +1,9 @@
+.link, .link:visited, link:active{
+  text-decoration: none;
+  color:#000;
+  font-size: var(--font-size-s);
+}
+.error{
+  color:red;
+  font-size: var(--font-size-xxs);
+}
