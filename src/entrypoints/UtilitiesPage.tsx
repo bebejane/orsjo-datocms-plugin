@@ -114,10 +114,7 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
               className={styles.progress}
               max={importStatus?.data?.total || 0} 
               value={importStatus?.data?.item || 0}
-            /> {importStatus && importStatus.status !== "END" && <Spinner/>}
-          </p>
-          <p>
-            {importStatus?.data?.total && `${importStatus?.data?.item} / ${importStatus?.data?.total} products`}
+            /> {importStatus && importStatus.status !== "END" && <Spinner/>} {importStatus?.data?.total && `${importStatus?.data?.item} / ${importStatus?.data?.total} products`}
           </p>
           <p>
             <Button onClick={handleImportPricelist} disabled={selectedFile === undefined} buttonSize="xxs">Start</Button>
