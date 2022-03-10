@@ -1,5 +1,5 @@
 import styles from './UtilitiesSidebar.module.css'
-import {io, Socket} from 'socket.io-client'
+import {io} from 'socket.io-client'
 import { RenderItemFormSidebarPanelCtx } from 'datocms-plugin-sdk';
 import { Canvas, Spinner} from 'datocms-react-ui';
 import { useEffect, useState} from 'react';

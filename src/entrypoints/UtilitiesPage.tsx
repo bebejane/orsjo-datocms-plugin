@@ -119,11 +119,28 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
           {importStatus?.data?.total && `${importStatus?.data?.item} / ${importStatus?.data?.total}`}
           {importStatus?.data?.notFound?.length > 0 &&
             <table className={styles.notFound}>
-            {importStatus?.data?.notFound.map((p:any) => 
-              <tr>
-                <td>{p.articleNo}</td><td>{p.description}</td><td>{p.price}</td><td>{p.type}</td>
-              </tr>
-            )}
+              <tr><th colSpan={4}>Not found</th></tr>
+              {importStatus?.data?.notFound.map((p:any) => 
+                <tr>
+                  <td>{p.articleNo}</td>
+                  <td>{p.description}</td>
+                  <td>{p.price}</td>
+                  <td>{p.type}</td>
+                </tr>
+              )}
+            </table>
+          }
+          {importStatus?.data?.errors?.length > 0 &&
+            <table className={styles.notFound}>
+              <tr><th colSpan={4}>Errors</th></tr>
+              {importStatus?.data?.errors.map((p:any) => 
+                <tr>
+                  <td>{p?.product.articleNo}</td>
+                  <td>{p?.product.description}</td>
+                  <td>{p?.product.price}</td>
+                  <td>{p?.error?.message}</td>
+                </tr>
+              )}
             </table>
           }
         </p>
