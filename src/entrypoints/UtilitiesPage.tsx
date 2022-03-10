@@ -105,7 +105,7 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
   return (
     <Canvas ctx={ctx}>
       <main className={styles.container}>
-        <Section title="Import new prices (.xlxs)">
+        <Section title="Import new prices (.xlsx)">
           <p>
             <input className={styles.file} onChange={fileChangeHandler} type="file" name="pricelist" id="pricelist" accept=".xlsx, application/vnd.ms-excel"/>
           </p>
