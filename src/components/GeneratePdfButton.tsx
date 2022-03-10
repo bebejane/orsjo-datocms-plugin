@@ -22,9 +22,10 @@ export default function GeneratePdfButton({ ctx, status, label, path, locale, re
   const isGenerating = status?.id && (status && status?.status !== 'END')
   return (
       <>
-        <Button onClick={() => requestGeneration(path, locale)} className={styles.generateButton}>{`${label}`}</Button>
+        <Button buttonSize="xxs" onClick={() => requestGeneration(path, locale)} className={styles.generateButton}>{`${label}`}</Button>
         &nbsp;
         <Button 
+          buttonSize="xxs"
           className={styles.statusIcon}
           disabled={status?.status !== 'END'} 
           onClick={()=>downloadFile(status)} 

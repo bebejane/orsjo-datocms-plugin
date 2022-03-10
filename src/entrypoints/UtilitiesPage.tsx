@@ -109,7 +109,7 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
         <Section title="Import new prices (.xlxs)">
         <p>
           <input className={styles.file} onChange={fileChangeHandler} type="file" name="pricelist" id="pricelist" accept=".xlsx, application/vnd.ms-excel"/>
-          <Button onClick={handleImportPricelist} disabled={selectedFile === undefined}>Start</Button>
+          <Button onClick={handleImportPricelist} disabled={selectedFile === undefined} buttonSize="xxs">Start</Button>
           <br/>
           <progress
             className={styles.progress}
@@ -118,7 +118,7 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
           /> 
           {importStatus?.data?.total && `${importStatus?.data?.item} / ${importStatus?.data?.total} products`}
           {importStatus && importStatus.status !== "END" && <Spinner/>}
-          
+
           {importStatus?.data?.notFound?.length > 0 &&
             <table className={styles.notFound}>
               <tr><th colSpan={4}>Not found</th></tr>
@@ -169,7 +169,7 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
             className={styles.logs} 
             value={logs.map((log) => `[${format(new Date(log.t), 'yyyy-MM-dd HH:mm:ss')}] ${log.m}`).join('')}
           />
-          <Button onClick={()=>setLogs([])}>Clear</Button>
+          <Button buttonSize="xxs" onClick={()=>setLogs([])}>Clear</Button>
         </Section>
 
       </main>
