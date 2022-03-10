@@ -116,7 +116,9 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
             max={importStatus?.data?.total || 0} 
             value={importStatus?.data?.item || 0}
           /> 
-          {importStatus?.data?.total && `${importStatus?.data?.item} / ${importStatus?.data?.total}`}
+          {importStatus?.data?.total && `${importStatus?.data?.item} / ${importStatus?.data?.total} products`}
+          {importStatus && importStatus.status !== "END" && <Spinner/>}
+          
           {importStatus?.data?.notFound?.length > 0 &&
             <table className={styles.notFound}>
               <tr><th colSpan={4}>Not found</th></tr>
