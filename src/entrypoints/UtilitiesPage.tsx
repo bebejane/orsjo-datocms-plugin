@@ -117,6 +117,8 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
           /> {importStatus && importStatus.status !== "END" && <Spinner/>}
           <br/>
           {importStatus?.data?.total && `${importStatus?.data?.item} / ${importStatus?.data?.total} products`}
+          <Button onClick={handleImportPricelist} disabled={selectedFile === undefined} buttonSize="xxs">Start</Button>
+          
           {importStatus?.data?.notFound?.length > 0 &&
             <table className={styles.notFound}>
               <tr><th colSpan={4}>Not found</th></tr>
@@ -143,7 +145,6 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
               )}
             </table>
           }
-          <Button onClick={handleImportPricelist} disabled={selectedFile === undefined} buttonSize="xxs">Start</Button>
         </p>
         </Section>
 

@@ -15,7 +15,8 @@
   margin-right: 10px;
 }
 .notFound{
-  margin-top: 20px;
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 .notFound > tr > td {
   padding-right: 10px;
