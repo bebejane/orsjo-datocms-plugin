@@ -105,47 +105,51 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
   return (
     <Canvas ctx={ctx}>
       <main className={styles.container}>
-
         <Section title="Import new prices (.xlxs)">
-        <p>
-          <input className={styles.file} onChange={fileChangeHandler} type="file" name="pricelist" id="pricelist" accept=".xlsx, application/vnd.ms-excel"/>
-          <br/>
-          <progress
-            className={styles.progress}
-            max={importStatus?.data?.total || 0} 
-            value={importStatus?.data?.item || 0}
-          /> {importStatus && importStatus.status !== "END" && <Spinner/>}
-          <br/>
-          {importStatus?.data?.total && `${importStatus?.data?.item} / ${importStatus?.data?.total} products`}
-          <Button onClick={handleImportPricelist} disabled={selectedFile === undefined} buttonSize="xxs">Start</Button>
-          
-          {importStatus?.data?.notFound?.length > 0 &&
-            <table className={styles.notFound}>
-              <tr><th colSpan={4}>Not found</th></tr>
-              {importStatus?.data?.notFound.map((p:any) => 
-                <tr>
-                  <td>{p.articleNo}</td>
-                  <td>{p.description}</td>
-                  <td>{p.price}</td>
-                  <td>{p.type}</td>
-                </tr>
-              )}
-            </table>
-          }
-          {importStatus?.data?.errors?.length > 0 &&
-            <table className={styles.notFound}>
-              <tr><th colSpan={4}>Errors</th></tr>
-              {importStatus?.data?.errors.map((p:any) => 
-                <tr>
-                  <td>{p?.product.articleNo}</td>
-                  <td>{p?.product.description}</td>
-                  <td>{p?.product.price}</td>
-                  <td>{p?.error?.message}</td>
-                </tr>
-              )}
-            </table>
-          }
-        </p>
+          <p>
+            <input className={styles.file} onChange={fileChangeHandler} type="file" name="pricelist" id="pricelist" accept=".xlsx, application/vnd.ms-excel"/>
+          </p>
+          <p>
+            <progress
+              className={styles.progress}
+              max={importStatus?.data?.total || 0} 
+              value={importStatus?.data?.item || 0}
+            /> {importStatus && importStatus.status !== "END" && <Spinner/>}
+          </p>
+          <p>
+            {importStatus?.data?.total && `${importStatus?.data?.item} / ${importStatus?.data?.total} products`}
+          </p>
+          <p>
+            <Button onClick={handleImportPricelist} disabled={selectedFile === undefined} buttonSize="xxs">Start</Button>
+          </p>
+          <p>
+            {importStatus?.data?.notFound?.length > 0 &&
+              <table className={styles.notFound}>
+                <tr><th colSpan={4}>Not found</th></tr>
+                {importStatus?.data?.notFound.map((p:any) => 
+                  <tr>
+                    <td>{p.articleNo}</td>
+                    <td>{p.description}</td>
+                    <td>{p.price}</td>
+                    <td>{p.type}</td>
+                  </tr>
+                )}
+              </table>
+            }
+            {importStatus?.data?.errors?.length > 0 &&
+              <table className={styles.notFound}>
+                <tr><th colSpan={4}>Errors</th></tr>
+                {importStatus?.data?.errors.map((p:any) => 
+                  <tr>
+                    <td>{p?.product.articleNo}</td>
+                    <td>{p?.product.description}</td>
+                    <td>{p?.product.price}</td>
+                    <td>{p?.error?.message}</td>
+                  </tr>
+                )}
+              </table>
+            }
+          </p>
         </Section>
 
         <Section title="Generate catalogue">
