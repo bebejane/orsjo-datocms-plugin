@@ -15,8 +15,12 @@
   margin-right: 10px;
 }
 .notFound{
-  color:red !important;
+  margin-top: 20px;
 }
 .notFound > tr > td {
   padding-right: 10px;
+  color:red !important;
+}
+.notFound > tr > th {
+  text-align: left !important;
 }
