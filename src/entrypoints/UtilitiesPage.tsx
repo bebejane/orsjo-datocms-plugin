@@ -109,16 +109,14 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
         <Section title="Import new prices (.xlxs)">
         <p>
           <input className={styles.file} onChange={fileChangeHandler} type="file" name="pricelist" id="pricelist" accept=".xlsx, application/vnd.ms-excel"/>
-          <Button onClick={handleImportPricelist} disabled={selectedFile === undefined} buttonSize="xxs">Start</Button>
           <br/>
           <progress
             className={styles.progress}
             max={importStatus?.data?.total || 0} 
             value={importStatus?.data?.item || 0}
-          /> 
+          /> {importStatus && importStatus.status !== "END" && <Spinner/>}
+          <br/>
           {importStatus?.data?.total && `${importStatus?.data?.item} / ${importStatus?.data?.total} products`}
-          {importStatus && importStatus.status !== "END" && <Spinner/>}
-
           {importStatus?.data?.notFound?.length > 0 &&
             <table className={styles.notFound}>
               <tr><th colSpan={4}>Not found</th></tr>
@@ -145,6 +143,7 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
               )}
             </table>
           }
+          <Button onClick={handleImportPricelist} disabled={selectedFile === undefined} buttonSize="xxs">Start</Button>
         </p>
         </Section>
 
