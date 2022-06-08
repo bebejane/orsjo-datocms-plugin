@@ -142,7 +142,7 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
                     <td>{p?.product?.articleNo}</td>
                     <td>{p?.product?.description}</td>
                     <td>{p?.product?.price}</td>
-                    <td>{p?.error?.message}</td>
+                    {/*<td>{p?.error?.message}</td>*/}
                   </tr>
                 )}
               </table>
