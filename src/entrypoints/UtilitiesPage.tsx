@@ -134,15 +134,15 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
                 )}
               </table>
             }
-            {importStatus?.data?.errors?.length > 0 &&
+            {importStatus && importStatus?.data?.errors?.length > 0 &&
               <table className={styles.notFound}>
                 <tr><th colSpan={4}>Errors</th></tr>
-                {importStatus?.data?.errors?.map((p:any) => 
+                {importStatus.data.errors.map((p:any) => 
                   <tr>
-                    <td>{p?.product?.articleNo}</td>
-                    <td>{p?.product?.description}</td>
-                    <td>{p?.product?.price}</td>
-                    {/*<td>{p?.error?.message}</td>*/}
+                    <td>Dato Id: {p?.product?.id}</td>
+                    <td>{p?.product?.title}</td>
+                    <td></td>
+                    <td>{p?.error?.message}</td>
                   </tr>
                 )}
               </table>
