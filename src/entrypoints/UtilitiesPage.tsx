@@ -86,9 +86,10 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
         ctx.notice(`Error: ${stat.data?.message || JSON.stringify(stat.data)}`)
       }
         
-      if(stat.type === 'import')
+      if(stat.type === 'import'){
+        console.log(stat);
         setImportStatus(stat);
-      else
+      }else
         setStatus((status) => status.map(s => ({...s, status: s.id === stat.id ? stat : s.status})));
     })
     socketRef.current.on("connect_error", (err) => setConnectionError(err));
