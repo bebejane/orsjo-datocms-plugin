@@ -139,9 +139,9 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
                 <tr><th colSpan={4}>Errors</th></tr>
                 {importStatus?.data?.errors.map((p:any) => 
                   <tr>
-                    <td>{p?.product.articleNo}</td>
-                    <td>{p?.product.description}</td>
-                    <td>{p?.product.price}</td>
+                    <td>{p?.product?.articleNo}</td>
+                    <td>{p?.product?.description}</td>
+                    <td>{p?.product?.price}</td>
                     <td>{p?.error?.message}</td>
                   </tr>
                 )}
