@@ -85,7 +85,7 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
         console.error(stat.data)
         ctx.notice(`Error: ${stat.data?.message || JSON.stringify(stat.data)}`)
       }
-      console.log(stat) 
+      console.log(stat);
       if(stat.type === 'import')
         setImportStatus(stat);
       else
