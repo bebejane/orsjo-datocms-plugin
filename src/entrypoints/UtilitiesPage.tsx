@@ -9,24 +9,26 @@ import { format } from 'date-fns';
 type PropTypes = { ctx: RenderPageCtx };
 type ValidParameters = { host: string, username: string, password: string };
 type Log = {t:string, m:string};
-type Status = {id:number, status:string, type:string, path:string, locale:string, data?:any, item?:number, total?:number, updated?:[], notFound?:[]};
+export type Status = {id:number, command:string, type:string, path:string, article?:number, totalArticles?:number, locale:string, item?:number, error?:string, errors?:string[], total?:number, updated?:[], uploads?:[any], notFound?:[]};
 type StatusMap = {locale:string, path:string, label:string, id?:number, status?:Status, processing?:boolean};
 
 const catalogues : StatusMap[] = [
-  {locale:'en', path:'/en/catalogue', label:'Full - EN'}, 
-  {locale:'sv', path:'/sv/catalogue', label:'Full - SV'}, 
-  {locale:'no', path:'/no/catalogue', label:'Full - NO'}, 
-  {locale:'en', path:'/en/catalogue/light', label:'Light - EN'}, 
-  {locale:'sv', path:'/sv/catalogue/light', label:'Light - SV'}, 
-  {locale:'no', path:'/no/catalogue/light', label:'Light - NO'}, 
-  {locale:'sv', path:'/sv/catalogue/with-lightsource', label:'Inc. Light - SV'}
+  {locale:'en', path:'/en/catalogue', label:'Full (en)'}, 
+  {locale:'sv', path:'/sv/catalogue', label:'Full (sv)'}, 
+  {locale:'no', path:'/no/catalogue', label:'Full (no)'}, 
+  {locale:'en', path:'/en/catalogue/light', label:'Light (en)'}, 
+  {locale:'sv', path:'/sv/catalogue/light', label:'Light (sv)'}, 
+  {locale:'no', path:'/no/catalogue/light', label:'Light (no)'}, 
+  {locale:'sv', path:'/sv/catalogue/with-lightsource', label:'Inc. Light (sv)'}
 ]
 
 export default function UtilitiesPage({ ctx } : PropTypes) {
 
+  const logsRef = useRef<Log[]>([])
   const [logs, setLogs] = useState<Log[]>([])
   const [status, setStatus] = useState<StatusMap[]>(catalogues)
   const [importStatus, setImportStatus] = useState<Status>()
+  const [importId, setImportId] = useState<number>()
   const [selectedFile, setSelectedFile] = useState<File>()
 
   const [connectionError, setConnectionError] = useState<Error>()
@@ -39,33 +41,44 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
   const password = parameters.password;
 
   const requestGeneration = async (path:string, locale:string) => { 
-    const headers = new Headers(); 
-		const basicAuth = `Basic ${btoa(unescape(encodeURIComponent(username + ":" + password)))}`
-    headers.append('Authorization', basicAuth);    
-    const res = await fetch(`${websocketServer}${path}`, {method: 'GET', headers})
-    const { id } = await res.json()
-    const newStatus = status.map(s => ({...s, id: s.path === path ? parseInt(id) : s.id, status: s.path === path ? undefined : s.status}));
-    setStatus([...newStatus]);
+    socketRef?.current?.send('catalogue', {path, locale}, ({id}: {id:number})=> {
+      const newStatus = status.map(s => ({...s, id: s.path === path ? id : s.id, status: s.path === path ? undefined : s.status}));
+      setStatus(newStatus)
+    })
   }
+  const handleImportPricelist = async (e:any) => {
+    console.log('click', socketRef?.current)
+    if(!selectedFile) return console.log('no selected file')
+		const excelFileBase64 = await convertBase64(selectedFile);
+		socketRef?.current?.send('pricelist', {excelFileBase64}, ({id}: {id:number})=> {
+      setImportId(id)
+      //setImportStatus({id, command:'pricelist', type:'STARTING', path:'/import', locale:'en'})
+    })
+	};
 
   const fileChangeHandler = (event:any) => setSelectedFile(event.target.files[0]);
 
-	const handleImportPricelist = async (e:any) => {
-    if(!selectedFile) return 
-		const formData = new FormData();
-    formData.append('file', selectedFile);
-    const basicAuth = `Basic ${btoa(unescape(encodeURIComponent(username + ":" + password)))}`
-		const headers = new Headers(); 
-		headers.set('Authorization', basicAuth);    
-    
-    const res = await fetch(`${websocketServer}/import`,{method: 'POST', body: formData, headers})
-		const { id } = await res.json()
-    setImportStatus({id, type:'import', status:'STARTING', path:'/import', locale:'en'})
+  const convertBase64 = (file : File) => {
+		return new Promise((resolve, reject) => {
+			const fileReader = new FileReader();
+			fileReader.readAsDataURL(file);
+			fileReader.onload = () => {
+				resolve(fileReader.result);
+			};
+			fileReader.onerror = (error) => {
+				reject(error);
+			};
+		});
 	};
+
+  const resetLogs = () => { if(typeof logsRef !== 'undefined') logsRef.current = []; updateLogs()}
+  const addLogs = (log: Log) => { if(typeof logsRef !== 'undefined') logsRef.current.push(log); updateLogs()}
+  const updateLogs = () => setLogs(logsRef.current)
 
   useEffect(() => {
     console.log(`Connecting to ${websocketServer}...`);
-    
+    if(isConnected) return
+
     socketRef.current = io(websocketServer, {
       transports: ['polling', 'websocket'],
       reconnection: true,
@@ -76,17 +89,13 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
 
     socketRef.current.on('connect', () => setIsConnected(true));
     socketRef.current.on('disconnect', () => setIsConnected(false));
-    socketRef.current.on('log', (log : Log) => { 
-      logs.push(log);
-      setLogs([...logs]);
-    })
+    socketRef.current.on('log', (log : Log) => addLogs(log))
     socketRef.current.on('status', (stat : Status) => { 
-      if(stat.status === 'ERROR'){
-        console.error(stat.data)
-        ctx.notice(`Error: ${stat.data?.message || JSON.stringify(stat.data)}`)
-      }
-      //console.log(stat);
-      if(stat.type === 'import')
+      
+      if(stat.type === 'ERROR')
+        ctx.notice(`Error: ${stat.error || JSON.stringify(stat.error)}`)
+        
+      if(stat.command === 'pricelist')
         setImportStatus(stat);
       else
         setStatus((status) => status.map(s => ({...s, status: s.id === stat.id ? stat : s.status})));
@@ -95,36 +104,57 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
     socketRef.current.on("error", (err) => setConnectionError(err));
     console.log(`done ws setup`);
 
-    return () => { socketRef?.current?.disconnect() };
+    return () => { 
+      socketRef.current?.removeAllListeners(); 
+      socketRef?.current?.disconnect() 
+    };
 
   }, [websocketServer])
 
   if(!isConnected) 
     return <Canvas ctx={ctx}><main className={styles.container}>Connecting to server... <Spinner/></main></Canvas>
   
+  const isImporting = importStatus && importStatus.type !== "END" && importStatus.type !== "ERROR";
+  
   return (
     <Canvas ctx={ctx}>
       <main className={styles.container}>
         <Section title="Import new prices (.xlsx)">
           <p>
-            <input className={styles.file} onChange={fileChangeHandler} type="file" name="pricelist" id="pricelist" accept=".xlsx, application/vnd.ms-excel"/>
+            <input 
+              className={styles.file} 
+              onChange={fileChangeHandler} 
+              type="file" 
+              name="pricelist" 
+              id="pricelist" 
+              accept=".xlsx, application/vnd.ms-excel"
+            />
           </p>
           <p>
             <progress
               className={styles.progress}
-              max={importStatus?.data?.total || 0} 
-              value={importStatus?.data?.item || 0}
-            /> {importStatus && importStatus.status !== "END" && <Spinner/>} {importStatus?.data?.total && `${importStatus?.data?.item} / ${importStatus?.data?.total} products`}
+              max={importStatus?.total || 0} 
+              value={importStatus?.item || 0}
+            />
+            <br/>
+            
+            {importStatus?.total && `${importStatus?.item} / ${importStatus?.total} products`} {importStatus?.article && `(${importStatus?.article} / ${importStatus?.totalArticles})`}
           </p>
           <p>
-            <Button onClick={handleImportPricelist} disabled={selectedFile === undefined} buttonSize="xxs">Start</Button>
-          </p>
+            <Button 
+              onClick={handleImportPricelist} 
+              disabled={selectedFile === undefined || isImporting} 
+              buttonSize="xxs"
+            >
+              Start
+            </Button>
+            </p>
           <p>
-            {importStatus?.data?.notFound?.length > 0 &&
+            {importStatus && importStatus.notFound && importStatus.notFound.length > 0 &&
               <table className={styles.notFound}>
                 <tr><th colSpan={4}>Not found</th></tr>
-                {importStatus?.data?.notFound.map((p:any) => 
-                  <tr>
+                {importStatus?.notFound?.map((p:any, idx) => 
+                  <tr key={idx}>
                     <td>{p.articleNo}</td>
                     <td>{p.description}</td>
                     <td>{p.price}</td>
@@ -133,11 +163,11 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
                 )}
               </table>
             }
-            {importStatus && importStatus?.data?.errors?.length > 0 &&
+            {importStatus && importStatus.errors && importStatus.errors.length > 0 &&
               <table className={styles.notFound}>
                 <tr><th colSpan={4}>Errors</th></tr>
-                {importStatus.data.errors.map((p:any) => 
-                  <tr>
+                {importStatus?.errors?.map((p:any, idx) => 
+                  <tr key={idx}>
                     <td>Dato Id: {p?.product?.id}</td>
                     <td>{p?.product?.title}</td>
                     <td></td>
@@ -150,9 +180,10 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
         </Section>
 
         <Section title="Generate catalogue">
-          {status.map(({label, locale, status, path }) =>
-            <p>
+          {status.map(({label, locale, status, path }, idx) =>
+            <>
               <GeneratePdfButton 
+                //key={idx}
                 ctx={ctx} 
                 status={status} 
                 label={label} 
@@ -160,7 +191,8 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
                 path={path} 
                 requestGeneration={requestGeneration}
               />
-            </p>
+              {idx % 3 === 2 && <br/>}
+            </>
           )}
         </Section>
 
@@ -170,7 +202,7 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
             className={styles.logs} 
             value={logs.map((log) => `[${format(new Date(log.t), 'yyyy-MM-dd HH:mm:ss')}] ${log.m}`).join('')}
           />
-          <Button buttonSize="xxs" onClick={()=>setLogs([])}>Clear</Button>
+          <Button buttonSize="xxs" onClick={resetLogs}>Clear</Button>
         </Section>
 
       </main>

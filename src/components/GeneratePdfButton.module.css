@@ -1,6 +1,14 @@
+.wrapper{
+  display: inline-block;
+  flex-direction: row;
+  margin-right: var(--spacing-s);
+  margin-bottom: var(--spacing-s);
+}
 .generateButton{
-  min-width: 150px; 
+  min-width: 150px;
 }
 .statusIcon{
-  min-width: 70px; 
+  min-width: 50px; 
+  max-width: 50px; 
+  margin-left:2px;
 }

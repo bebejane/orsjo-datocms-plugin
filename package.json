@@ -21,6 +21,7 @@
   },
   "scripts": {
     "start": "cross-env BROWSER='none' PUBLIC_URL='/' react-scripts start",
+    "dev": "cross-env BROWSER='none' PUBLIC_URL='/' PORT=3001 react-scripts start",
     "build": "cross-env PUBLIC_URL='.' react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
