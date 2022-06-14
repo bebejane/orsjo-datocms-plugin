@@ -1,13 +1,10 @@
+import type { ValidParameters } from '../types'
 import { RenderConfigScreenCtx } from 'datocms-plugin-sdk';
 import { Canvas, Form, FieldGroup, TextField, Button } from 'datocms-react-ui';
 import { useState } from 'react';
 
 type Props = { ctx: RenderConfigScreenCtx; };
-
 type FreshInstallationParameters = { host:'', username:'', password:''};
-
-type ValidParameters = { host: string, username: string, password: string };
-
 type Parameters = FreshInstallationParameters | ValidParameters;
 
 export default function ConfigScreen({ ctx }: Props) {

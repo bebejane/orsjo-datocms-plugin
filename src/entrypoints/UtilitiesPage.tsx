@@ -1,4 +1,5 @@
 import styles from './UtilitiesPage.module.css'
+import type { Status, ValidParameters } from '../types'
 import GeneratePdfButton from '../components/GeneratePdfButton'
 import { io, Socket } from 'socket.io-client'
 import { useRef, useEffect, useState } from 'react'
@@ -7,9 +8,7 @@ import { Canvas, Button, Spinner, Section, TextField } from 'datocms-react-ui';
 import { format } from 'date-fns';
 
 type PropTypes = { ctx: RenderPageCtx };
-type ValidParameters = { host: string, username: string, password: string };
 type Log = {t:string, m:string};
-export type Status = {id:number, command:string, type:string, path:string, article?:number, totalArticles?:number, locale:string, item?:number, error?:string, errors?:string[], total?:number, updated?:[], uploads?:[any], notFound?:[]};
 type StatusMap = {locale:string, path:string, label:string, id?:number, status?:Status, processing?:boolean};
 
 const catalogues : StatusMap[] = [
@@ -47,12 +46,10 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
     })
   }
   const handleImportPricelist = async (e:any) => {
-    console.log('click', socketRef?.current)
     if(!selectedFile) return console.log('no selected file')
 		const excelFileBase64 = await convertBase64(selectedFile);
 		socketRef?.current?.send('pricelist', {excelFileBase64}, ({id}: {id:number})=> {
       setImportId(id)
-      //setImportStatus({id, command:'pricelist', type:'STARTING', path:'/import', locale:'en'})
     })
 	};
 

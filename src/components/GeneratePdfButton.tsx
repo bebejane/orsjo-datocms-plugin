@@ -1,9 +1,10 @@
+import type { Status } from '../types'
 import styles from './GeneratePdfButton.module.css'
 import { Button, Spinner} from 'datocms-react-ui';
 import { RenderPageCtx } from 'datocms-plugin-sdk';
 import { GrDocumentPdf } from 'react-icons/gr'
-import type { Status } from '../entrypoints/UtilitiesPage'
-//type Status = {id:number, status:string, type:string, path:string, locale:string, data?:any, item?:number, total?:number, updated?:[], notFound?:[]};
+
+
 type PropTypes = { ctx: RenderPageCtx, label: string, path:string, locale:string, status?: Status, requestGeneration:(path: string, locale:string) => void};
 
 export default function GeneratePdfButton({ ctx, status, label, path, locale, requestGeneration }: PropTypes) {
