@@ -50,7 +50,7 @@ export default function ConfigScreen({ ctx }: Props) {
             hint="Provide password"
             onChange={(password) => setForm({...form, password})}
           />
-          <Button onClick={saveSettings}>Save settings</Button>
+          <Button onClick={saveSettings} fullWidth>Save settings</Button>
         </FieldGroup>
       </Form>
     </Canvas>

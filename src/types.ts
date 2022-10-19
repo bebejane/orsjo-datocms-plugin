@@ -7,7 +7,7 @@ export type Status = {
 	totalArticles?: number;
 	locale: string;
 	item?: number;
-	error?: string;
+	error?: string | any;
 	errors?: string[];
 	total?: number;
 	updated?: [];
