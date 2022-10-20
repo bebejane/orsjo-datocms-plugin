@@ -39,3 +39,11 @@
 .notFound > tr > th {
   text-align: left !important;
 }
+
+.toggleLogs{
+  margin-top: 1rem;
+}
+
+.logsHeader{
+  margin-top: 1rem;
+}

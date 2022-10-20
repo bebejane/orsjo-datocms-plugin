@@ -1,7 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
-import { connect, IntentCtx, RenderPageCtx, ModelBlock, RenderItemFormSidebarPanelCtx } from 'datocms-plugin-sdk';
+import { 
+  connect, 
+  IntentCtx, 
+  RenderPageCtx, 
+  ModelBlock, 
+  RenderItemFormSidebarPanelCtx 
+} from 'datocms-plugin-sdk';
 import { render } from './utils/render';
 import ConfigScreen from './entrypoints/ConfigScreen';
 import UtilitiesPage from './entrypoints/UtilitiesPage'
@@ -10,13 +15,6 @@ import UtilitiesSidebar from './entrypoints/UtilitiesSidebar'
 import 'datocms-react-ui/styles.css';
 
 const isDev = document.location.hostname === 'localhost';
-
-function renderPage(component: React.ReactNode) {
-  ReactDOM.render(
-    <React.StrictMode>{component}</React.StrictMode>,
-    document.getElementById('root'),
-  );
-}
 
 connect({
   renderConfigScreen(ctx) {
@@ -29,7 +27,7 @@ connect({
       
     return [
       {
-        label: `Utilities${isDev ? ' DEV' : ''}`,
+        label: `Utilities${isDev ? ' (dev)' : ''}`,
         icon: 'wrench',
         placement: ['after', 'settings'],
         pointsTo: {
@@ -39,7 +37,9 @@ connect({
     ];
   },
   itemFormSidebarPanels(model: ModelBlock, ctx: IntentCtx) {
-    if(model.attributes.api_key !== 'product') return []
+    if(model.attributes.api_key !== 'product') 
+      return []
+      
     return [
       {
         id: 'sidebarUtilities',
