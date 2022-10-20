@@ -23,6 +23,10 @@ connect({
     return render(<ConfigScreen ctx={ctx} />);
   },
   contentAreaSidebarItems(ctx: IntentCtx) {
+    const isAuthorized = ctx.currentRole.attributes.can_manage_menu
+    if(!isAuthorized) 
+      return []
+      
     return [
       {
         label: `Utilities${isDev ? ' DEV' : ''}`,
