@@ -29,7 +29,7 @@ connect({
       {
         label: `Utilities${isDev ? ' (dev)' : ''}`,
         icon: 'wrench',
-        placement: ['after', 'settings'],
+        placement: ['before', 'settings'],
         pointsTo: {
           pageId: 'utilities',
         },
