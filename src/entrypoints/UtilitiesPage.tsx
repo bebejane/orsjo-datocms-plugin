@@ -196,6 +196,11 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
         </Section>
 
         
+        <Button buttonSize="xxs" onClick={()=>setShowLogs(!showLogs)} className={styles.toggleLogs}>
+          {showLogs ? 'Hide logs' : 'Show logs'}
+        </Button>
+
+
         {showLogs && 
           <Section title="Logs" headerClassName={styles.logsHeader}>
             <textarea 
@@ -207,10 +212,7 @@ export default function UtilitiesPage({ ctx } : PropTypes) {
           </Section>
         }
         
-        <Button buttonSize="xxs" onClick={()=>setShowLogs(!showLogs)} className={styles.toggleLogs}>
-          {showLogs ? 'Hide logs' : 'Show logs'}
-        </Button>
-
+        
       </main>
     </Canvas>
   );

@@ -62,16 +62,13 @@ export default function UtilitiesSidebar({ ctx }: PropTypes) {
     };
 
   }, [parameters.host, ctx])
-
-  if(!isConnected) 
-    return <Canvas ctx={ctx}><Spinner /></Canvas>;
-
+  
   const isGenerating = status?.id && requestId === status.id && status?.type !== 'END'
   const error = status?.type === 'ERROR' ? status.error : connectionError;
   
   return (
     <Canvas ctx={ctx}>
-      <Button onClick={generate} buttonSize="xxs" fullWidth>
+      <Button onClick={generate} buttonSize="xxs" fullWidth disabled={!isConnected}>
         {!isGenerating && !isRequesting ? `Re-generate PDF (${locale})` : <Spinner /> }
       </Button>
       {error && <div className={styles.error}>{error.message || error}</div>}

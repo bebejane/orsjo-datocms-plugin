@@ -7,6 +7,7 @@ import {
   ModelBlock, 
   RenderItemFormSidebarPanelCtx 
 } from 'datocms-plugin-sdk';
+
 import { render } from './utils/render';
 import ConfigScreen from './entrypoints/ConfigScreen';
 import UtilitiesPage from './entrypoints/UtilitiesPage'
@@ -22,8 +23,7 @@ connect({
   },
   contentAreaSidebarItems(ctx: IntentCtx) {
     const isAuthorized = ctx.currentRole.attributes.can_manage_menu
-    if(!isAuthorized) 
-      return []
+    if(!isAuthorized) return []
       
     return [
       {
@@ -55,14 +55,14 @@ connect({
       </React.StrictMode>,
       document.getElementById('root'),
     );
-  },
-  async onBoot(ctx) {
-    console.log(`orsjo-datocms-plugin v${require('../package.json').version}`);
-  },
+  },  
   renderPage(pageId, ctx: RenderPageCtx) {
     switch (pageId) {
       case 'utilities':
         return render(<UtilitiesPage ctx={ctx} />);
     }
   },
+  async onBoot(ctx) {
+    console.log(`orsjo-datocms-plugin v${require('../package.json').version}`);
+  }
 });
