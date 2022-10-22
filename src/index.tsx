@@ -21,7 +21,7 @@ connect({
   renderConfigScreen(ctx) {
     return render(<ConfigScreen ctx={ctx} />);
   },
-  contentAreaSidebarItems(ctx: IntentCtx) {
+  mainNavigationTabs(ctx: IntentCtx) {
     const isAuthorized = ctx.currentRole.attributes.can_manage_menu
     if(!isAuthorized) return []
       
