@@ -81,7 +81,7 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
       transports: ['polling', 'websocket'],
       reconnection: true,
       reconnectionDelay: 1000,
-      reconnectionDelayMax: 1000,
+      reconnectionDelayMax: 90000,
       reconnectionAttempts: 99999
     });
 
