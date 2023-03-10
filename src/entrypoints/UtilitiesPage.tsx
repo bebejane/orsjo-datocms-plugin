@@ -80,13 +80,19 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
     socketRef.current = io(websocketServer, {
       transports: ['polling', 'websocket'],
       reconnection: true,
-      reconnectionDelay: 30000,
-      reconnectionDelayMax: 60000,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
       reconnectionAttempts: 99999
     });
 
-    socketRef.current.on('connect', () => setIsConnected(true));
-    socketRef.current.on('disconnect', () => setIsConnected(false));
+    socketRef.current.on('connect', () => {
+      console.log(`connected`);
+      setIsConnected(true)
+    });
+    socketRef.current.on('disconnect', () => {
+      console.log(`disconnected`);
+      setIsConnected(false)
+    });
     socketRef.current.on('log', (log: Log) => addLogs(log))
     socketRef.current.on('status', (stat: Status) => {
 
@@ -98,9 +104,9 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
       else
         setStatus((status) => status.map(s => ({ ...s, status: s.id === stat.id ? stat : s.status })));
     })
+
     socketRef.current.on("connect_error", (err) => setConnectionError(err));
     socketRef.current.on("error", (err) => setConnectionError(err));
-    console.log(`done ws setup`);
 
     return () => {
       socketRef.current?.removeAllListeners();
