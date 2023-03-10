@@ -80,8 +80,8 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
     socketRef.current = io(websocketServer, {
       transports: ['polling', 'websocket'],
       reconnection: true,
-      reconnectionDelay: 1000,
-      reconnectionDelayMax: 90000,
+      reconnectionDelay: 10000,
+      reconnectionDelayMax: 60000,
       reconnectionAttempts: 99999
     });
 
