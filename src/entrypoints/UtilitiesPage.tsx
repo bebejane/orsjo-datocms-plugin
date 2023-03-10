@@ -86,9 +86,11 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
     });
 
     socketRef.current.on('connect', () => {
+      console.log(`connected`);
       setIsConnected(true)
     });
     socketRef.current.on('disconnect', () => {
+      console.log(`disconnected`);
       setIsConnected(false)
     });
     socketRef.current.on('log', (log: Log) => addLogs(log))
