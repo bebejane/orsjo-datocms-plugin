@@ -95,7 +95,7 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
     });
     socketRef.current.on('log', (log: Log) => addLogs(log))
     socketRef.current.on('status', (stat: Status) => {
-
+      console.log(stat)
       if (stat.type === 'ERROR')
         ctx.notice(`Error: ${stat.error || JSON.stringify(stat.error)}`)
 
