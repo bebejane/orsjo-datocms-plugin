@@ -81,21 +81,19 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
       transports: ['polling', 'websocket'],
       reconnection: true,
       reconnectionDelay: 1000,
-      reconnectionDelayMax: 5000,
+      reconnectionDelayMax: 1000,
       reconnectionAttempts: 99999
     });
 
     socketRef.current.on('connect', () => {
-      console.log(`connected`);
       setIsConnected(true)
     });
     socketRef.current.on('disconnect', () => {
-      console.log(`disconnected`);
       setIsConnected(false)
     });
     socketRef.current.on('log', (log: Log) => addLogs(log))
     socketRef.current.on('status', (stat: Status) => {
-      console.log(stat)
+
       if (stat.type === 'ERROR')
         ctx.notice(`Error: ${stat.error || JSON.stringify(stat.error)}`)
 
