@@ -24,7 +24,7 @@ export default function GeneratePdfButton({ ctx, status, label, path, locale, re
     link.href = upload.url;
     document.body.appendChild(link);
     link.click();
-    ctx.notice(`Downloading "${upload.filename}"`);
+    //ctx.notice(`Downloading "${upload.filename}"`);
     setTimeout(() => { link.parentNode?.removeChild(link) }, 0);
   }
 
