@@ -3,6 +3,7 @@ import styles from './GeneratePdfButton.module.css'
 import { Button, Spinner } from 'datocms-react-ui';
 import { RenderPageCtx } from 'datocms-plugin-sdk';
 import { GrDocumentPdf } from 'react-icons/gr'
+import cn from 'classnames'
 
 type PropTypes = {
   ctx: RenderPageCtx,
@@ -29,7 +30,7 @@ export default function GeneratePdfButton({ ctx, status, label, path, locale, re
   }
 
   const isGenerating = status?.id && (status && status?.type !== 'END')
-
+  const href = status?.type === 'END' && status.uploads ? status.uploads[0].href : '#' as string
   return (
     <div className={styles.wrapper}>
       <Button
@@ -37,13 +38,11 @@ export default function GeneratePdfButton({ ctx, status, label, path, locale, re
         onClick={() => requestGeneration(path, locale)}
         className={styles.generateButton}
       >{`${label}`}</Button>
-      <Button
-        buttonSize="xxs"
-        className={styles.statusIcon}
-        disabled={status?.type !== 'END'}
-        onClick={(e) => { downloadFile(status) }}
-        leftIcon={!isGenerating ? <GrDocumentPdf /> : <Spinner />}
-      />
+      <a
+        className={cn(styles.statusIcon, status?.type !== 'END' && styles.disabled)}
+        download
+        href={href}
+      >{!isGenerating ? <GrDocumentPdf /> : <Spinner />}</a>
     </div>
   );
 }
