@@ -6,6 +6,7 @@ import { useRef, useEffect, useState } from 'react'
 import { RenderPageCtx } from 'datocms-plugin-sdk';
 import { Canvas, Button, Spinner, Section } from 'datocms-react-ui';
 import { format } from 'date-fns';
+import React from 'react'
 
 type PropTypes = { ctx: RenderPageCtx };
 type Log = { t: string, m: string };
@@ -191,9 +192,9 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
 
         <Section title="Generate catalogue">
           {status.map(({ label, locale, status, path }, idx) =>
-            <>
+            <React.Fragment key={idx}>
               <GeneratePdfButton
-                //key={idx}
+                key={`${locale}-${path}`}
                 ctx={ctx}
                 status={status}
                 label={label}
@@ -202,7 +203,7 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
                 requestGeneration={requestGeneration}
               />
               {(idx + 1) % 4 === 0 && <br />}
-            </>
+            </React.Fragment>
           )}
         </Section>
 
@@ -215,6 +216,7 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
             <textarea
               id="logs"
               className={styles.logs}
+              key={Math.random()}
               value={logs.map((log) => `[${format(new Date(log.t), 'yyyy-MM-dd HH:mm:ss')}] ${log.m}`).join('')}
             />
             <Button buttonSize="xxs" onClick={resetLogs}>Clear</Button>
