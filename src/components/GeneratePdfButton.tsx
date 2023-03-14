@@ -30,7 +30,8 @@ export default function GeneratePdfButton({ ctx, status, label, path, locale, re
   }
 
   const isGenerating = status?.id && (status && status?.type !== 'END')
-  const href = status?.type === 'END' && status.uploads ? status.uploads[0].href : '#' as string
+  const href = status?.type === 'END' && status.uploads ? status.uploads[0].url : '#'
+
   return (
     <div className={styles.wrapper}>
       <Button
@@ -38,11 +39,14 @@ export default function GeneratePdfButton({ ctx, status, label, path, locale, re
         onClick={() => requestGeneration(path, locale)}
         className={styles.generateButton}
       >{`${label}`}</Button>
-      <a
-        className={cn(styles.statusIcon, status?.type !== 'END' && styles.disabled)}
-        download
-        href={href}
-      >{!isGenerating ? <GrDocumentPdf /> : <Spinner />}</a>
+      <Button
+        buttonSize="xxs">
+        <a
+          className={cn(styles.statusIcon, status?.type !== 'END' && styles.disabled)}
+          download
+          href={href}
+        >{!isGenerating ? <GrDocumentPdf /> : <Spinner />}</a>
+      </Button>
     </div>
   );
 }
