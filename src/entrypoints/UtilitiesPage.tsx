@@ -197,7 +197,7 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
                 path={path}
                 requestGeneration={requestGeneration}
               />
-              {idx % 3 === 2 && <br />}
+              {idx % 4 === 2 && <br />}
             </>
           )}
         </Section>
