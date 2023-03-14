@@ -46,8 +46,8 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
     socketRef?.current?.send('catalogue', { path, locale }, ({ id }: { id: number }) => {
       const newStatus = status.map(s => ({
         ...s,
-        id: s.path === path ? id : s.id,
-        status: s.path === path ? undefined : s.status
+        id: s.path === path && s.locale === locale ? id : s.id,
+        status: s.path === path && s.locale === locale ? undefined : s.status
       }));
       setStatus(newStatus)
     })
