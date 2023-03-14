@@ -15,9 +15,11 @@ const catalogues: StatusMap[] = [
   { locale: 'en', path: '/en/catalogue', label: 'Full (en)' },
   { locale: 'sv', path: '/sv/catalogue', label: 'Full (sv)' },
   { locale: 'no', path: '/no/catalogue', label: 'Full (no)' },
+  { locale: 'da', path: '/da/catalogue', label: 'Full (da)' },
   { locale: 'en', path: '/en/catalogue/light', label: 'Light (en)' },
   { locale: 'sv', path: '/sv/catalogue/light', label: 'Light (sv)' },
   { locale: 'no', path: '/no/catalogue/light', label: 'Light (no)' },
+  { locale: 'da', path: '/da/catalogue/light', label: 'Light (da)' },
   { locale: 'sv', path: '/sv/catalogue/with-lightsource', label: 'Inc. Light (sv)' }
 ]
 
@@ -95,7 +97,7 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
     });
     socketRef.current.on('log', (log: Log) => addLogs(log))
     socketRef.current.on('status', (stat: Status) => {
-
+      console.log(stat)
       if (stat.type === 'ERROR')
         ctx.notice(`Error: ${stat.error || JSON.stringify(stat.error)}`)
 
