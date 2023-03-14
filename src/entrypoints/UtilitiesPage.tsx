@@ -12,15 +12,15 @@ type Log = { t: string, m: string };
 type StatusMap = { locale: string, path: string, label: string, id?: number, status?: Status, processing?: boolean };
 
 const catalogues: StatusMap[] = [
-  { locale: 'en', path: '/en/catalogue', label: 'Full (en)' },
-  { locale: 'sv', path: '/sv/catalogue', label: 'Full (sv)' },
-  { locale: 'no', path: '/no/catalogue', label: 'Full (no)' },
-  { locale: 'da', path: '/da/catalogue', label: 'Full (da)' },
-  { locale: 'en', path: '/en/catalogue/light', label: 'Light (en)' },
-  { locale: 'sv', path: '/sv/catalogue/light', label: 'Light (sv)' },
-  { locale: 'no', path: '/no/catalogue/light', label: 'Light (no)' },
-  { locale: 'da', path: '/da/catalogue/light', label: 'Light (da)' },
-  { locale: 'sv', path: '/sv/catalogue/with-lightsource', label: 'Inc. Light (sv)' }
+  { locale: 'en', path: '/catalogue', label: 'Full (en)' },
+  { locale: 'sv', path: '/catalogue', label: 'Full (sv)' },
+  { locale: 'no', path: '/catalogue', label: 'Full (no)' },
+  { locale: 'da', path: '/catalogue', label: 'Full (da)' },
+  { locale: 'en', path: '/catalogue/light', label: 'Light (en)' },
+  { locale: 'sv', path: '/catalogue/light', label: 'Light (sv)' },
+  { locale: 'no', path: '/catalogue/light', label: 'Light (no)' },
+  { locale: 'da', path: '/catalogue/light', label: 'Light (da)' },
+  { locale: 'sv', path: '/catalogue/with-lightsource', label: 'Inc. Light (sv)' }
 ]
 
 export default function UtilitiesPage({ ctx }: PropTypes) {
@@ -44,7 +44,11 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
 
   const requestGeneration = async (path: string, locale: string) => {
     socketRef?.current?.send('catalogue', { path, locale }, ({ id }: { id: number }) => {
-      const newStatus = status.map(s => ({ ...s, id: s.path === path ? id : s.id, status: s.path === path ? undefined : s.status }));
+      const newStatus = status.map(s => ({
+        ...s,
+        id: s.path === path ? id : s.id,
+        status: s.path === path ? undefined : s.status
+      }));
       setStatus(newStatus)
     })
   }
