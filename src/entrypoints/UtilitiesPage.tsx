@@ -44,6 +44,8 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
   const password = parameters.password;
 
   const requestGeneration = async (path: string, locale: string) => {
+    if (!socketRef?.current) return console.error('No socket ref')
+    console.log('req', locale, path)
     socketRef?.current?.send('catalogue', { path, locale }, ({ id }: { id: number }) => {
       const newStatus = status.map(s => ({
         ...s,
@@ -53,6 +55,7 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
       setStatus(newStatus)
     })
   }
+
   const handleImportPricelist = async (e: any) => {
     if (!selectedFile) return console.log('no selected file')
     const excelFileBase64 = await convertBase64(selectedFile);
