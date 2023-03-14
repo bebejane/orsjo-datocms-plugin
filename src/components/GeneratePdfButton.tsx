@@ -17,15 +17,15 @@ export default function GeneratePdfButton({ ctx, status, label, path, locale, re
 
   const downloadFile = (s?: Status) => {
 
-    if (!s?.uploads) return console.log('hej')
+    if (!s?.uploads) return console.log('no uploads')
     const upload = s?.uploads[0]
     const link = document.createElement("a");
     link.style.display = "none";
     link.href = upload.url;
     document.body.appendChild(link);
     link.click();
-    //ctx.notice(`Downloading "${upload.filename}"`);
-    setTimeout(() => { link.parentNode?.removeChild(link) }, 0);
+    console.log(`Downloading "${upload.filename}"`)
+    link.parentNode?.removeChild(link)
   }
 
   const isGenerating = status?.id && (status && status?.type !== 'END')
@@ -41,7 +41,7 @@ export default function GeneratePdfButton({ ctx, status, label, path, locale, re
         buttonSize="xxs"
         className={styles.statusIcon}
         disabled={status?.type !== 'END'}
-        onClick={() => downloadFile(status)}
+        onClick={(e) => { downloadFile(status) }}
         leftIcon={!isGenerating ? <GrDocumentPdf /> : <Spinner />}
       />
     </div>
