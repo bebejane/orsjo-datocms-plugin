@@ -197,16 +197,14 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
                 path={path}
                 requestGeneration={requestGeneration}
               />
-              {idx % 4 === 2 && <br />}
+              {(idx + 1) % 4 === 0 && <br />}
             </>
           )}
         </Section>
 
-
         <Button buttonSize="xxs" onClick={() => setShowLogs(!showLogs)} className={styles.toggleLogs}>
           {showLogs ? 'Hide logs' : 'Show logs'}
         </Button>
-
 
         {showLogs &&
           <Section title="Logs" headerClassName={styles.logsHeader}>
@@ -218,8 +216,6 @@ export default function UtilitiesPage({ ctx }: PropTypes) {
             <Button buttonSize="xxs" onClick={resetLogs}>Clear</Button>
           </Section>
         }
-
-
       </main>
     </Canvas>
   );
